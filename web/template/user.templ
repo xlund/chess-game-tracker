@@ -1,0 +1,10 @@
+package web
+
+import "github.com/xlund/chess-games-tracker/domain"
+
+templ User(u domain.UserClaims) {
+	<div>
+		<img class="avatar" src={ u.Picture }/>
+		<h2>Welcome { u.Name }</h2>
+	</div>
+}
