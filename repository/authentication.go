@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
 	"os"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -36,7 +37,15 @@ func New() (domain.Authenticator, error) {
 
 // VerifyIDToken verifies that an *oauth2.Token is a valid *oidc.IDToken
 func (a *Auth0Authenticator) VerifyIDToken(ctx context.Context, token *oauth2.Token) (*oidc.IDToken, error) {
-	return a.Provider.Verifier(&oidc.Config{ClientID: a.ClientID}).Verify(ctx, token.AccessToken)
+	rawIDToken, ok := token.Extra("id_token").(string)
+	if !ok {
+		return nil, errors.New("no id_token field in oauth2 token")
+	}
+	oidcConfig := &oidc.Config{
+		ClientID: a.ClientID,
+	}
+
+	return a.Provider.Verifier(oidcConfig).Verify(ctx, rawIDToken)
 }
 
 func (a *Auth0Authenticator) GetLoginURL(c echo.Context, session *sessions.Session) (string, error) {
@@ -60,13 +69,13 @@ func (a *Auth0Authenticator) VerifyState(state string, session *sessions.Session
 	return state == storedState
 }
 
-func (a *Auth0Authenticator) GetProfile(code string, ctx context.Context) (*oauth2.Token, *domain.UserClaims, error) {
-	token, err := a.Exchange(ctx, code)
+func (a *Auth0Authenticator) GetClaims(code string, ctx echo.Context) (*oauth2.Token, *domain.UserClaims, error) {
+	token, err := a.Exchange(ctx.Request().Context(), code)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	idToken, err := a.VerifyIDToken(ctx, token)
+	idToken, err := a.VerifyIDToken(ctx.Request().Context(), token)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -75,6 +84,7 @@ func (a *Auth0Authenticator) GetProfile(code string, ctx context.Context) (*oaut
 	if err := idToken.Claims(&profile); err != nil {
 		return nil, nil, err
 	}
+
 	return token, &profile, nil
 }
 

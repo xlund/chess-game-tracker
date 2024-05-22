@@ -17,8 +17,9 @@ func Callback(auth domain.Authenticator) echo.HandlerFunc {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
 		code := c.QueryParam("code")
+		c.Logger().Debug(code)
 
-		token, profile, err := auth.GetProfile(code, c.Request().Context())
+		token, profile, err := auth.GetClaims(code, c)
 		if err != nil {
 			c.Logger().Error(err)
 			return c.String(http.StatusInternalServerError, err.Error())

@@ -11,7 +11,7 @@ import (
 
 type Authenticator interface {
 	VerifyIDToken(ctx context.Context, token *oauth2.Token) (*oidc.IDToken, error)
-	GetLoginURL(c echo.Context, session *sessions.Session) (string, error)
 	VerifyState(state string, session *sessions.Session) bool
-	GetProfile(code string, session context.Context) (*oauth2.Token, *UserClaims, error)
+	GetLoginURL(c echo.Context, session *sessions.Session) (string, error)
+	GetClaims(code string, ctx echo.Context) (*oauth2.Token, *UserClaims, error)
 }
