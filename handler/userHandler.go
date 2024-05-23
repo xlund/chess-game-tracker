@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/xlund/chess-games-tracker/domain"
-	web "github.com/xlund/chess-games-tracker/web/template"
+	"github.com/xlund/chess-games-tracker/web/page"
 )
 
 func User() echo.HandlerFunc {
@@ -20,7 +20,7 @@ func User() echo.HandlerFunc {
 		if !ok {
 			return c.Redirect(http.StatusFound, "/")
 		}
-		t := web.User(profile)
+		t := page.User(profile)
 		return t.Render(c.Request().Context(), c.Response().Writer)
 	}
 }

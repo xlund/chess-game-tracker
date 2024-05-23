@@ -28,6 +28,7 @@ func New(auth *domain.Authenticator, fs embed.FS) *echo.Echo {
 	e.GET("/", handler.Index())
 	e.GET("/login", handler.Login(*auth))
 	e.GET("/callback", handler.Callback(*auth))
+	e.GET("/logout", handler.Logout())
 	e.GET("/user", handler.User())
 	return e
 }

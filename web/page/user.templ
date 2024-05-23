@@ -1,0 +1,15 @@
+package page
+
+import "github.com/xlund/chess-games-tracker/domain"
+import "github.com/xlund/chess-games-tracker/web/shared"
+
+templ User(u domain.UserClaims) {
+	@shared.Layout("User") {
+		<main>
+			<img class="avatar" src={ u.Picture }/>
+			<h2>Welcome { u.Name }</h2>
+			<pre>{ u.ID }</pre>
+			<button _="on click cookies.clear('auth-session') then go to url '/logout'">Logout</button>
+		</main>
+	}
+}

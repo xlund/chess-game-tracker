@@ -1,0 +1,46 @@
+package shared
+
+import "os"
+
+templ Layout(title string) {
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<title>{ title } – Chess Games Tracker</title>
+			<link rel="stylesheet" href="https://unpkg.com/missing.css"/>
+			<script src="https://unpkg.com/htmx.org@1.8.5"></script>
+			<script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+			if os.Getenv("DEBUG") == "true" {
+				<style>
+				@keyframes debug {
+					from {outline: 3px solid #FF0000FF;}
+					to {outline: 3px solid #FF000000;}
+				}
+				* {
+					animation-name: debug;
+					animation-duration: 1s;
+				}
+			</style>
+			}
+		</head>
+		<body>
+			<header class="navbar">
+				@Nav()
+			</header>
+			{ children... }
+		</body>
+	</html>
+}
+
+templ Nav() {
+	<nav class="contents">
+		<p>
+			<a class="allcaps" href="/">
+				CGT
+			</a>
+		</p>
+		<ul class="navbar-links" role="list">
+			<li><a href="/login">Login</a></li>
+		</ul>
+	</nav>
+}

@@ -1,0 +1,12 @@
+package page
+
+import "github.com/xlund/chess-games-tracker/web/shared"
+
+templ Home() {
+	@shared.Layout("Home") {
+		<main>
+			<h1>Chess Games Tracker</h1>
+			<a href="/login">Login</a>
+		</main>
+	}
+}
